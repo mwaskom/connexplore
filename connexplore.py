@@ -14,7 +14,7 @@ class ConnectivityExplorer(Brain):
                  **kwargs):
         """Initialize the interactive object."""
         super(ConnectivityExplorer, self).__init__(
-            subject, "split", surface,
+            subject, "split", surface, curv=False,
             config_opts={"width": size * 2, "height": size},
             **kwargs
             )
@@ -109,6 +109,10 @@ if __name__ == "__main__":
     try:
         get_ipython
 
+        # If we get here, the script is running under an IPython session
+        # so we can boot up the ConnectivityExplorer based on the command
+        # line arguments and then return control back to the caller.
+
         import sys
         from argparse import ArgumentParser
 
@@ -116,14 +120,24 @@ if __name__ == "__main__":
         parser.add_argument("matrix")
         parser.add_argument("names")
         parser.add_argument("-annot")
+        parser.add_argument("-subject", default="fsaverage")
+        parser.add_argument("-surface", default="inflated")
+        parser.add_argument("-vlim", type=float, default=.7)
         args = parser.parse_args(sys.argv[1].split())
 
         matrix = pd.read_csv(args.matrix, index_col=0)
         names = pd.read_csv(args.names)
 
-        c = ConnectivityExplorer(matrix, names, args.annot)
+        c = ConnectivityExplorer(matrix, names, args.annot,
+                                 subject=args.subject,
+                                 surface=args.surface,
+                                 vlim=args.vlim)
 
     except NameError:
+
+        # If we get here, the script is running under the regular Python
+        # interpreter, so we are going to turn around and submit it to an
+        # interactive IPython session with a gui backend.
 
         import os
         import sys
