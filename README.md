@@ -7,7 +7,7 @@ The tool is intended to be used with a dataset that describes edge weights betwe
 
 To use it, you input two data structures:
 
-- `matrix`: A square, symettric matrix where each cell is the weight of the connection between the row and column nodes. This should be a Pandas DataFrame object with region names as the index and columns. The only constraint on the region names is that they have to start with either `"lh"` or `"rh"` to identify the hemisphere they lie in.
+- `matrix`: A square, symmetric matrix where each cell is the weight of the connection between the row and column nodes. This should be a Pandas DataFrame object with region names as the index and columns. The only constraint on the region names is that they have to start with either `"lh"` or `"rh"` to identify the hemisphere they lie in.
 
 - `names:` A Pandas DataFrame with the region name corresponding to each vertex in the left and right hemisphere meshes. There must be a name for every vertex, but the names can be a superset of `matrix` index and column names (i.e., you can have a dataset that is missing data for some regions).
 
@@ -26,15 +26,15 @@ From the command line, using data stored in csv format:
 From an interactive IPython session (make sure to run with `%gui qt` or similar), using data stored in Pandas objects:
 
 ```python
-c = ConnectivityExplorer(evoked_matrix, vertex_names,
+c = ConnectivityExplorer(resting_matrix, vertex_names,
                          annot="Yeo2011_17Networks_N1000")
 ```
 
-Either way will launch a PySurfer window. Right-click on the brain to seed the connectivity analysis.
-
-There are a few other options for controlling what anatomy is used and how the colormap is scaled.
+Either way will launch a PySurfer window. Right-click on the brain to seed the connectivity analysis. You should see something that looks like this:
 
 ![screenshot](screenshot.png)
+
+There are a few other options for controlling what anatomy is used and how the colormap is scaled.
 
 Dependencies
 ------------
@@ -59,4 +59,14 @@ There is a memory leak in PySurfer/Mayavi that will cause memory usage to grow o
 License
 -------
 
-BSD (3-clause)
+Copyright (c) 2015, Michael Waskom All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
