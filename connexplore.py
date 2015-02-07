@@ -1,4 +1,27 @@
 #! /usr/bin/env python
+
+if __name__ == "__main__":
+    # Determine if we are running in an interactive IPython session
+    # We do this here so that we don't need to import Mayavi twice
+    # when running from the command line (it takes a while to load).
+    try:
+
+        get_ipython
+
+    except NameError:
+
+        # If we get here, the script is running under the regular Python
+        # interpreter, so we are going to turn around and submit it to an
+        # interactive IPython session with a gui backend.
+
+        import os
+        import sys
+
+        args = " ".join(sys.argv[1:])
+        cmd = "ipython -i --gui=qt -- {} '{}'".format(__file__, args)
+        os.system(cmd)
+
+
 import numpy as np
 import pandas as pd
 from surfer import Brain
@@ -51,13 +74,17 @@ class ConnectivityExplorer(Brain):
 
     def _update_focus(self, vertex, hemi):
         """Plot a spherical glyph at the clicked vertex."""
-        while self.foci_dict:
-            self.foci_dict.popitem()[1][0].remove()
+        self._clear_foci()
         self.add_foci([vertex], coords_as_verts=True,
                       color=(1, .94, .65), hemi=hemi)
 
-    def _clear_colorbars(self):
+    def _clear_foci(self):
+        """Remove any existing foci glyphs."""
+        while self.foci_dict:
+            self.foci_dict.popitem()[1][0].remove()
 
+    def _clear_colorbars(self):
+        """Remove any existing data colorbars."""
         while self._colorbars:
             self._colorbars.pop().visible = False
 
@@ -106,42 +133,26 @@ class ConnectivityExplorer(Brain):
 
 if __name__ == "__main__":
 
-    try:
-        get_ipython
+    # If we get here, the script is running under an IPython session
+    # so we can boot up the ConnectivityExplorer based on the command
+    # line arguments and then return control back to the caller.
 
-        # If we get here, the script is running under an IPython session
-        # so we can boot up the ConnectivityExplorer based on the command
-        # line arguments and then return control back to the caller.
+    import sys
+    from argparse import ArgumentParser
 
-        import sys
-        from argparse import ArgumentParser
+    parser = ArgumentParser()
+    parser.add_argument("matrix")
+    parser.add_argument("names")
+    parser.add_argument("-annot")
+    parser.add_argument("-subject", default="fsaverage")
+    parser.add_argument("-surface", default="inflated")
+    parser.add_argument("-vlim", type=float, default=.7)
+    args = parser.parse_args(sys.argv[1].split())
 
-        parser = ArgumentParser()
-        parser.add_argument("matrix")
-        parser.add_argument("names")
-        parser.add_argument("-annot")
-        parser.add_argument("-subject", default="fsaverage")
-        parser.add_argument("-surface", default="inflated")
-        parser.add_argument("-vlim", type=float, default=.7)
-        args = parser.parse_args(sys.argv[1].split())
+    matrix = pd.read_csv(args.matrix, index_col=0)
+    names = pd.read_csv(args.names)
 
-        matrix = pd.read_csv(args.matrix, index_col=0)
-        names = pd.read_csv(args.names)
-
-        c = ConnectivityExplorer(matrix, names, args.annot,
-                                 subject=args.subject,
-                                 surface=args.surface,
-                                 vlim=args.vlim)
-
-    except NameError:
-
-        # If we get here, the script is running under the regular Python
-        # interpreter, so we are going to turn around and submit it to an
-        # interactive IPython session with a gui backend.
-
-        import os
-        import sys
-
-        args = " ".join(sys.argv[1:])
-        cmd = "ipython -i --gui=qt -- {} '{}'".format(__file__, args)
-        os.system(cmd)
+    c = ConnectivityExplorer(matrix, names, args.annot,
+                             subject=args.subject,
+                             surface=args.surface,
+                             vlim=args.vlim)
