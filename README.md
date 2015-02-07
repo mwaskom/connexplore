@@ -1,7 +1,7 @@
 Connectivity Explorer
 =====================
 
-PySurfer extension for interactively exploring connectivity data on a Freesurfer cortex model.
+[PySurfer](http://pysurfer.github.io/) extension for interactively exploring connectivity data on a Freesurfer cortex model.
 
 The tool is intended to be used with a dataset that describes edge weights between regional nodes defined on a Freesurfer surface. It's most geared towards functional connectivity analyses, but it's implemented generally and any kind of data that can be described this way will work.
 
@@ -39,7 +39,7 @@ There are a few other options for controlling what anatomy is used and how the c
 Dependencies
 ------------
 
-- PySurfer
+- PySurfer ([installation instructions](http://pysurfer.github.io/install.html))
 - Pandas
 
 The tool does not depend on Freesurfer, but you do need to have used Freesurfer to process the anatomy you want to visualize. `$SUBJECTS_DIR` must be defined and have the required files.
